@@ -1,0 +1,22 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  canvas {
+    width: 100vw;
+    height: 100vh;
+    display: block;
+  }
+  #drop-area {
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+  }
