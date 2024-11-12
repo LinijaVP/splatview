@@ -3,6 +3,7 @@ from flask_cors import CORS
 from plyfile import PlyData
 import os
 import tempfile
+import json
 
 app = Flask(__name__)
 CORS(app) 
@@ -42,7 +43,7 @@ def upload_file():
         # Extract positions and colors
         for v in plydata.elements[0].data:
             positions.extend([float(v['x']), float(v['y']), float(v['z'])]) 
-            colors.extend([float(v['red']/255), float(v['green']/255), float(v['blue']/255)]) 
+            colors.extend([int(v['red']), int(v['green']), int(v['blue'])]) 
             
     
     except Exception as e:
@@ -54,6 +55,10 @@ def upload_file():
     finally:
         file.close()
         os.remove(temp_file_path)
+        if not os.path.isfile("data.json"):
+            print("Writing file data.json")
+            with open("data.json", "w") as json_file:
+                json.dump({"position": positions, "color": colors}, json_file, indent=4)
         return jsonify({"position": positions, "color": colors})
 
     
