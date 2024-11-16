@@ -46,8 +46,8 @@ const vertexShaderSource = `
   uniform mat4 uProjection;
 
   void main() {
-    gl_Position = uProjection * uView * uModel * vec4(position, 1.0);
-    gl_PointSize = 5.0;
+    gl_Position = uModel * uProjection * uView * vec4(position, 1.0);
+    gl_PointSize = 15.0;
     vColor = color;
   }
 `;
@@ -144,7 +144,7 @@ const projection = mat4.create();
 
 // Compute the projection matrix
 var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-var zNear = 0.01;
+var zNear = 0.1;
 var zFar = 100;
 mat4.perspective(projection, glMatrix.toRadian(45), aspect, zNear, zFar);
 
@@ -182,24 +182,24 @@ function updateViewMatrix() {
   ];
   vec3.normalize(front, front);
 
-  const right = vec3.cross([], front, [0, 1, 0]); // Right vector
+  const right = vec3.cross([], front, [0, 0, 1]); // Right vector
   vec3.normalize(right, right);
 
   if(keys["w"]) vec3.scaleAndAdd(cameraPosition, cameraPosition, front, cameraSpeed);
   if(keys["a"]) vec3.scaleAndAdd(cameraPosition, cameraPosition, right, -cameraSpeed);
   if(keys["s"]) vec3.scaleAndAdd(cameraPosition, cameraPosition, front, -cameraSpeed);
   if(keys["d"]) vec3.scaleAndAdd(cameraPosition, cameraPosition, right, cameraSpeed);
-  if(keys["ArrowUp"]) pitch = Math.min(pitch + rotationSpeed, 89); // Clamp to avoid flipping
-  else if(keys["ArrowDown"]) pitch = Math.max(pitch - rotationSpeed, -89);
-  if(keys["ArrowLeft"]) yaw -= rotationSpeed;
-  else if(keys["ArrowRight"]) yaw += rotationSpeed;
+  if(keys["ArrowUp"])  yaw += rotationSpeed;
+  else if(keys["ArrowDown"]) yaw -= rotationSpeed;
+  if(keys["ArrowLeft"]) pitch = Math.min(pitch + rotationSpeed, 89); // Clamp to avoid flipping
+  else if(keys["ArrowRight"]) pitch = Math.max(pitch - rotationSpeed, -89);
 
   const targetPoint = [
     cameraPosition[0] + Math.cos(glMatrix.toRadian(yaw)) * Math.cos(glMatrix.toRadian(pitch)),
     cameraPosition[1] + Math.sin(glMatrix.toRadian(pitch)),
     cameraPosition[2] + Math.sin(glMatrix.toRadian(yaw)) * Math.cos(glMatrix.toRadian(pitch)),
   ];
-  mat4.lookAt(view, cameraPosition, targetPoint, [0, 1, 0]);
+  mat4.lookAt(view, cameraPosition, targetPoint, [0, 0, 1]);
 }
 
 const dropArea = document.getElementById('drop-area');
